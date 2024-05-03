@@ -4,6 +4,7 @@ use pyo3::types::PyString;
 use pyo3::wrap_pyfunction;
 use std::fs::File;
 use std::io::BufReader;
+use std::io::Cursor;
 
 #[macro_use]
 mod doc;
@@ -386,6 +387,31 @@ impl PyIndexedOntology {
         match result {
             Ok(()) => Ok(()),
             Err(error) => panic!("Problem saving the ontology to a file: {:?}", error),
+        }
+    }
+
+    /// write_to_rdf_string(self) -> None
+    ///
+    /// Writes the ontology to a string in rdf format.
+    fn write_to_rdf_string(&mut self) -> PyResult<String> {
+        let mut buf = Cursor::new(Vec::new());
+        let mut amo: ArcAxiomMappedOntology = AxiomMappedOntology::new_arc();
+        let oid = &self.ontology.id().clone();
+
+        amo.mut_id().iri = oid.iri.clone();
+        amo.mut_id().viri = oid.viri.clone();
+        //Copy the axioms into an AxiomMappedOntology
+        for aax in self.ontology.iter() {
+            amo.insert(aax.clone());
+        }
+        let _ = horned_owl::io::rdf::writer::write(&mut buf, &amo).unwrap();
+
+        let bytes = buf.into_inner();
+        let result = String::from_utf8(bytes);
+
+        match result {
+            Ok(string) => Ok(string),
+            Err(error) => panic!("Problem writing the ontology to a string: {:?}", error),
         }
     }
 

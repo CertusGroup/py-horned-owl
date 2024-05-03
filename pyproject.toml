@@ -3,7 +3,7 @@ requires = ["maturin>=1.2,<2.0"]
 build-backend = "maturin"
 
 [project]
-name = "py-horned-owl"
+name = "py-horned-owl-certus"
 requires-python = ">=3.7"
 license = {text = "LGPL-3.0-or-later"}
 classifiers = [
