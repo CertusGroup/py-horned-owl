@@ -29,7 +29,7 @@ fn to_py_type_str(n: &str, m: String) -> String {
     }
 
     ma = set_regex.captures(&name);
-    if ma.is_some() {
+    if ma.is_some() {"rust Option" ;
         let inner = to_py_type_str(ma.unwrap()[1].borrow(), m);
         return format!("typing.Set[{}]", inner);
     }
@@ -534,7 +534,6 @@ macro_rules! wrapped {
                 }
             }
 
-
             impl From<&$name> for horned_owl::model::$name<ArcStr> {
                 fn from(value: &$name) -> Self {
                     horned_owl::model::$name::<ArcStr> {
@@ -775,32 +774,59 @@ impl FromCompatible<horned_owl::model::IRI<Arc<str>>> for IRI {
     }
 }
 
+impl FromCompatible<&Option<horned_owl::model::IRI<Arc<str>>>> for Option<IRI>{
+    fn from_c(value: &Option<horned_owl::model::IRI<Arc<str>>>) -> Self {
+	match value {
+	    Some(iri) => Some(IRI::from(iri)),
+	    None => None
+	}
+    }
+}
+
+impl FromCompatible<Option<horned_owl::model::IRI<Arc<str>>>> for Option<IRI>{
+    fn from_c(value: Option<horned_owl::model::IRI<Arc<str>>>) -> Self {
+	match value {
+	    Some(iri) => Some(IRI::from(iri.borrow())),
+	    None => None
+	}
+    }
+}
+
+impl FromCompatible<&Option<IRI>> for Option<horned_owl::model::IRI<Arc<str>>>{
+    fn from_c(value: &Option<IRI>) -> Self {
+	match value {
+	    Some(iri) => Some(horned_owl::model::IRI::<Arc<str>>::from(iri)),
+	    None => None
+	}
+    }
+}
+
 impl FromCompatible<IRI> for horned_owl::model::IRI<Arc<str>> {
     fn from_c(value: IRI) -> Self {
         horned_owl::model::IRI::<Arc<str>>::from(value.borrow())
     }
 }
 
-impl FromCompatible<&horned_owl::model::Facet> for Facet {
-    fn from_c(value: &horned_owl::model::Facet) -> Self {
+impl FromCompatible<&horned_owl::vocab::Facet> for Facet {
+    fn from_c(value: &horned_owl::vocab::Facet) -> Self {
         Facet::from(value)
     }
 }
 
-impl FromCompatible<Facet> for horned_owl::model::Facet {
+impl FromCompatible<Facet> for horned_owl::vocab::Facet {
     fn from_c(value: Facet) -> Self {
         From::from(value.borrow())
     }
 }
 
-impl FromCompatible<&Facet> for horned_owl::model::Facet {
+impl FromCompatible<&Facet> for horned_owl::vocab::Facet {
     fn from_c(value: &Facet) -> Self {
-        horned_owl::model::Facet::from(value)
+        horned_owl::vocab::Facet::from(value)
     }
 }
 
-impl FromCompatible<horned_owl::model::Facet> for Facet {
-    fn from_c(value: horned_owl::model::Facet) -> Self {
+impl FromCompatible<horned_owl::vocab::Facet> for Facet {
+    fn from_c(value: horned_owl::vocab::Facet) -> Self {
         Facet::from(value.borrow())
     }
 }
@@ -1005,49 +1031,50 @@ impl Facet {
     }
 }
 
-impl From<&Facet> for horned_owl::model::Facet {
+impl From<&Facet> for horned_owl::vocab::Facet {
     fn from(value: &Facet) -> Self {
         match value {
-            Facet::Length => horned_owl::model::Facet::Length,
-            Facet::MinLength => horned_owl::model::Facet::MinLength,
-            Facet::MaxLength => horned_owl::model::Facet::MaxLength,
-            Facet::Pattern => horned_owl::model::Facet::Pattern,
-            Facet::MinInclusive => horned_owl::model::Facet::MinInclusive,
-            Facet::MinExclusive => horned_owl::model::Facet::MinExclusive,
-            Facet::MaxInclusive => horned_owl::model::Facet::MaxInclusive,
-            Facet::MaxExclusive => horned_owl::model::Facet::MaxExclusive,
-            Facet::TotalDigits => horned_owl::model::Facet::TotalDigits,
-            Facet::FractionDigits => horned_owl::model::Facet::FractionDigits,
-            Facet::LangRange => horned_owl::model::Facet::LangRange,
+            Facet::Length => horned_owl::vocab::Facet::Length,
+            Facet::MinLength => horned_owl::vocab::Facet::MinLength,
+            Facet::MaxLength => horned_owl::vocab::Facet::MaxLength,
+            Facet::Pattern => horned_owl::vocab::Facet::Pattern,
+            Facet::MinInclusive => horned_owl::vocab::Facet::MinInclusive,
+            Facet::MinExclusive => horned_owl::vocab::Facet::MinExclusive,
+            Facet::MaxInclusive => horned_owl::vocab::Facet::MaxInclusive,
+            Facet::MaxExclusive => horned_owl::vocab::Facet::MaxExclusive,
+            Facet::TotalDigits => horned_owl::vocab::Facet::TotalDigits,
+            Facet::FractionDigits => horned_owl::vocab::Facet::FractionDigits,
+            Facet::LangRange => horned_owl::vocab::Facet::LangRange,
         }
     }
 }
-impl From<&horned_owl::model::Facet> for Facet {
-    fn from(value: &horned_owl::model::Facet) -> Self {
+impl From<&horned_owl::vocab::Facet> for Facet {
+    fn from(value: &horned_owl::vocab::Facet) -> Self {
         match value {
-            horned_owl::model::Facet::Length => Facet::Length,
-            horned_owl::model::Facet::MinLength => Facet::MinLength,
-            horned_owl::model::Facet::MaxLength => Facet::MaxLength,
-            horned_owl::model::Facet::Pattern => Facet::Pattern,
-            horned_owl::model::Facet::MinInclusive => Facet::MinInclusive,
-            horned_owl::model::Facet::MinExclusive => Facet::MinExclusive,
-            horned_owl::model::Facet::MaxInclusive => Facet::MaxInclusive,
-            horned_owl::model::Facet::MaxExclusive => Facet::MaxExclusive,
-            horned_owl::model::Facet::TotalDigits => Facet::TotalDigits,
-            horned_owl::model::Facet::FractionDigits => Facet::FractionDigits,
-            horned_owl::model::Facet::LangRange => Facet::LangRange,
+            horned_owl::vocab::Facet::Length => Facet::Length,
+            horned_owl::vocab::Facet::MinLength => Facet::MinLength,
+            horned_owl::vocab::Facet::MaxLength => Facet::MaxLength,
+            horned_owl::vocab::Facet::Pattern => Facet::Pattern,
+            horned_owl::vocab::Facet::MinInclusive => Facet::MinInclusive,
+            horned_owl::vocab::Facet::MinExclusive => Facet::MinExclusive,
+            horned_owl::vocab::Facet::MaxInclusive => Facet::MaxInclusive,
+            horned_owl::vocab::Facet::MaxExclusive => Facet::MaxExclusive,
+            horned_owl::vocab::Facet::TotalDigits => Facet::TotalDigits,
+            horned_owl::vocab::Facet::FractionDigits => Facet::FractionDigits,
+            horned_owl::vocab::Facet::LangRange => Facet::LangRange,
         }
     }
 }
 
-impl From<Facet> for horned_owl::model::Facet {
+impl From<Facet> for horned_owl::vocab::Facet {
     fn from(value: Facet) -> Self {
         value.borrow().into()
     }
 }
-impl From<horned_owl::model::Facet> for Facet {
-    fn from(value: horned_owl::model::Facet) -> Self {
-        value.borrow().into()
+impl From<horned_owl::vocab::Facet> for Facet {
+    fn from(value: horned_owl::vocab::Facet) -> Self {
+        //value.borrow().into()
+	value.into()
     }
 }
 
@@ -1196,6 +1223,7 @@ wrapped! {
     pub enum AnnotationValue {
         Literal(Literal),
         IRI(IRI),
+	AnonymousIndividual(AnonymousIndividual),
     }
 }
 
@@ -1208,6 +1236,17 @@ wrapped! {
 
 wrapped! {
     pub struct OntologyAnnotation(pub Annotation)
+}
+
+wrapped! {
+    pub struct DocIRI(pub IRI)
+}
+
+wrapped! {
+    pub struct OntologyID {
+	pub iri: Option<IRI>,
+	pub viri: Option<IRI>,
+    }
 }
 
 wrapped! {
@@ -1430,7 +1469,9 @@ wrapped! {
 
 wrapped! {
     transparent
-    pub enum Axiom {
+    pub enum Component {
+	DocIRI(DocIRI),
+	OntologyID(OntologyID),
         OntologyAnnotation(OntologyAnnotation),
         Import(Import),
         DeclareClass(DeclareClass),
@@ -1479,8 +1520,8 @@ wrapped! {
 }
 
 wrapped! {
-    pub struct AnnotatedAxiom {
-        pub axiom: Axiom,
+    pub struct AnnotatedComponent {
+        pub component: Component,
         pub ann: BTreeSetWrap<Annotation>,
     }
 }
@@ -1578,7 +1619,7 @@ pub fn py_module(py: Python<'_>) -> PyResult<&PyModule> {
     module.add_class::<DatatypeLiteral>()?;
     module.add_class::<ObjectProperty>()?;
     module.add_class::<InverseObjectProperty>()?;
-    module.add_class::<AnnotatedAxiom>()?;
+    module.add_class::<AnnotatedComponent>()?;
     module.add_class::<Annotation>()?;
     module.add_class::<AnnotationAssertion>()?;
     module.add_class::<AnnotationProperty>()?;
@@ -1625,6 +1666,8 @@ pub fn py_module(py: Python<'_>) -> PyResult<&PyModule> {
     module.add_class::<ObjectPropertyDomain>()?;
     module.add_class::<ObjectPropertyRange>()?;
     module.add_class::<OntologyAnnotation>()?;
+    module.add_class::<OntologyID>()?;
+    module.add_class::<DocIRI>()?;
     module.add_class::<ReflexiveObjectProperty>()?;
     module.add_class::<SameIndividual>()?;
     module.add_class::<SubAnnotationPropertyOf>()?;
@@ -1640,13 +1683,13 @@ pub fn py_module(py: Python<'_>) -> PyResult<&PyModule> {
         ClassExpression,
         ObjectPropertyExpression,
         SubObjectPropertyExpression,
-        Literal,
+	Literal,
         DataRange,
         Individual,
         PropertyExpression,
         AnnotationSubject,
         AnnotationValue,
-        Axiom
+        Component
     );
     
     Ok(module)
