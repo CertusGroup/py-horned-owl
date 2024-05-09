@@ -9,3 +9,8 @@ Cargo.lock
 **/__pycache__
 docs/source/generated
 docs/build
+
+bin/
+target/
+lib/
+pyvenv.cfg
