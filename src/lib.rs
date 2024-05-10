@@ -316,6 +316,21 @@ impl PyIndexedOntology {
         Ok(object_properties)
     }
 
+    fn get_data_properties(&mut self) -> PyResult<HashSet<String>> {
+        //Get the DeclareDataProperty axioms
+        let data_properties = self
+            .ontology
+            .component_for_kind(ComponentKind::DeclareDataProperty);
+
+        let data_properties: HashSet<String> = data_properties
+            .filter_map(|aax| match aax.clone().component {
+                Component::DeclareDataProperty(ddp) => Some(ddp.0.0.to_string()),
+                _ => None,
+            })
+            .collect();
+        Ok(data_properties)
+    }
+
     /// get_annotation(self, class_iri: str, ann_iri: str) -> Optional[str]
     ///
     /// Gets the first annotated value for an entity and annotation property.
