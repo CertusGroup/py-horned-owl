@@ -531,6 +531,11 @@ impl PyIndexedOntology {
         Ok(())
     }
 
+    fn remove(&mut self, ac: model::AnnotatedComponent) -> PyResult<()> {
+        self.ontology.remove(&ac.into());
+        Ok(())
+    }
+
     /// iri(self, iri: str) -> model.IRI
     ///
     /// Creates an new IRI from string.
