@@ -466,6 +466,30 @@ impl PyIndexedOntology {
         }
     }
 
+    /// write_to_owx_string(self) -> None
+    ///
+    /// Writes the ontology to a string in rdf format.
+    fn write_to_owx_string(&mut self) -> PyResult<String> {
+        let mut buf = Cursor::new(Vec::new());
+        //let mut amo: ArcAxiomMappedOntology = AxiomMappedOntology::new_arc();
+	let mut amo: ArcComponentMappedOntology = ComponentMappedOntology::new_arc();
+        //let oid = &self.ontology.id().clone();
+
+        //Copy the axioms into an AxiomMappedOntology
+        for aax in self.ontology.iter() {
+            amo.insert(aax.clone());
+        }
+        let _ = horned_owl::io::owx::writer::write(&mut buf, &amo, Some(&self.mapping)).unwrap();
+
+        let bytes = buf.into_inner();
+        let result = String::from_utf8(bytes);
+
+        match result {
+            Ok(string) => Ok(string),
+            Err(error) => panic!("Problem writing the ontology to a string: {:?}", error),
+        }
+    }
+
     /// get_axioms_for_iri(self, iri: str) -> List[model.AnnotatedComponent]
     ///
     /// Gets all axioms for an entity.
