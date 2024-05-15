@@ -1,6 +1,6 @@
 use std::{borrow::Borrow, collections::BTreeSet, sync::Arc};
 
-use horned_owl::model::ArcStr;
+use horned_owl::model::{ArcStr};
 
 use pyo3::{exceptions::PyKeyError, prelude::*, types::{PyType, IntoPyDict}, PyObject};
 
@@ -744,6 +744,8 @@ impl FromCompatible<&Arc<str>> for StringWrapper {
     }
 }
 
+
+
 impl FromCompatible<&StringWrapper> for Arc<str> {
     fn from_c(value: &StringWrapper) -> Self {
         Arc::<str>::from(value)
@@ -867,6 +869,41 @@ impl FromCompatible<BTreeSetWrap<Annotation>>
     fn from_c(value: BTreeSetWrap<Annotation>) -> Self {
         FromCompatible::from_c(value.borrow())
     }
+}
+
+impl FromCompatible<&(horned_owl::model::DArgument<Arc<str>>,
+		      horned_owl::model::DArgument<Arc<str>>)> for (DArgument, DArgument) {
+    fn from_c(value: &(horned_owl::model::DArgument<Arc<str>>, horned_owl::model::DArgument<Arc<str>>),) -> Self {
+	(DArgument::from(value.0.borrow()), DArgument::from(value.1.borrow()))
+    }
+}
+
+impl FromCompatible<&(DArgument, DArgument)>
+    for (horned_owl::model::DArgument<Arc<str>>, horned_owl::model::DArgument<Arc<str>>) {
+	fn from_c(value: &(DArgument, DArgument)) -> Self {
+	    FromCompatible::from_c(value)
+	}
+}
+
+impl FromCompatible<&(horned_owl::model::IArgument<Arc<str>>,
+		      horned_owl::model::IArgument<Arc<str>>)> for (IArgument, IArgument) {
+    fn from_c(value: &(horned_owl::model::IArgument<Arc<str>>, horned_owl::model::IArgument<Arc<str>>),) -> Self {
+	(IArgument::from(value.0.borrow()), IArgument::from(value.1.borrow()))
+    }
+}
+
+impl FromCompatible<(horned_owl::model::IArgument<Arc<str>>,
+		     horned_owl::model::IArgument<Arc<str>>)> for (IArgument, IArgument) {
+    fn from_c(value: (horned_owl::model::IArgument<Arc<str>>, horned_owl::model::IArgument<Arc<str>>),) -> Self {
+	(IArgument::from(value.0.borrow()), IArgument::from(value.1.borrow()))
+    }
+}
+
+impl FromCompatible<&(IArgument, IArgument)>
+    for (horned_owl::model::IArgument<Arc<str>>, horned_owl::model::IArgument<Arc<str>>) {
+	fn from_c(value: &(IArgument, IArgument)) -> Self {
+	    FromCompatible::from_c(value)
+        }
 }
 
 trait ToPyi {
@@ -1131,6 +1168,7 @@ wrapped! {
         DatatypeRestriction(Datatype, VecWrap<FacetRestriction>),
     }
 }
+
 
 wrapped! {
 pub enum ClassExpression {
@@ -1467,9 +1505,68 @@ wrapped! {
 }
 }
 
+
+
+wrapped! {
+    pub struct Variable(pub IRI)
+}
+
+wrapped! {
+    transparent
+    pub enum IArgument {
+	Individual(Individual),
+	Variable(Variable),
+    }
+}
+
+wrapped! {
+    transparent
+    pub enum DArgument {
+	Literal(Literal),
+	Variable(Variable),
+    }
+}
+
+wrapped! {
+    #[suffixed]
+    pub enum Atom {
+	BuiltInAtom {
+	    pred: IRI,
+	    args: VecWrap<DArgument>,
+	},
+	ClassAtom {
+            pred: ClassExpression,
+	    arg: IArgument,
+	},
+	DataPropertyAtom {
+	    pred: DataProperty,
+	    args: (DArgument, DArgument),
+	},
+	DataRangeAtom {
+	    pred: DataRange,
+	    arg: DArgument,
+	},
+	DifferentIndividualsAtom (IArgument, IArgument),
+	ObjectPropertyAtom {
+	    pred: ObjectPropertyExpression,
+	    args: (IArgument, IArgument),
+	},
+	SameIndividualAtom(IArgument, IArgument),
+    }
+}
+
+
+wrapped! {
+    pub struct Rule {
+	pub head:  VecWrap<Atom>,
+	pub body:  VecWrap<Atom>,
+    }
+}
+
 wrapped! {
     transparent
     pub enum Component {
+	Rule(Rule),
 	DocIRI(DocIRI),
 	OntologyID(OntologyID),
         OntologyAnnotation(OntologyAnnotation),
@@ -1590,7 +1687,6 @@ pub fn py_module(py: Python<'_>) -> PyResult<&PyModule> {
 
     // To get all members to export on the documentation website for horned_ows::model execute the following javascript command
     // console.log([...(await Promise.all(Array.from(document.querySelectorAll("a.enum")).filter(x => ["ClassExpression", "ObjectPropertyExpression", "Literal", "DataRange", ""].indexOf(x.innerText) >= 0).map(async a => { html = await(await fetch(a.href)).text(); doc = document.createElement("html"); doc.innerHTML=html; return Array.from(doc.querySelectorAll(".variant")).map(x => x.id.replace("variant.", "")); }))).flatMap(arr => arr.map(x => `module.add_class::<${ x }>()?;`)), ...Array.from(document.querySelectorAll("a.struct")).map(x=>x.innerText).filter(x => ["Build", "OntologyID"].indexOf(x) < 0).map(x => `module.add_class::<${ x }>()?;`)].join("\n"))
-    module.add_class::<Class>()?;
     module.add_class::<ObjectIntersectionOf>()?;
     module.add_class::<ObjectUnionOf>()?;
     module.add_class::<ObjectComplementOf>()?;
@@ -1676,8 +1772,9 @@ pub fn py_module(py: Python<'_>) -> PyResult<&PyModule> {
     module.add_class::<SubObjectPropertyOf>()?;
     module.add_class::<SymmetricObjectProperty>()?;
     module.add_class::<TransitiveObjectProperty>()?;
-
     module.add_class::<Facet>()?;
+    module.add_class::<Rule>()?;
+    module.add_class::<Variable>()?;
 
     add_type_alias!(py, module,
         ClassExpression,
@@ -1689,7 +1786,8 @@ pub fn py_module(py: Python<'_>) -> PyResult<&PyModule> {
         PropertyExpression,
         AnnotationSubject,
         AnnotationValue,
-        Component
+        Component,
+        Atom
     );
     
     Ok(module)
