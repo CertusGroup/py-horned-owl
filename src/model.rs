@@ -1774,6 +1774,13 @@ pub fn py_module(py: Python<'_>) -> PyResult<&PyModule> {
     module.add_class::<Facet>()?;
     module.add_class::<Rule>()?;
     module.add_class::<Variable>()?;
+    module.add_class::<BuiltInAtom>()?;
+    module.add_class::<ClassAtom>()?;
+    module.add_class::<DataPropertyAtom>()?;
+    module.add_class::<DataRangeAtom>()?;
+    module.add_class::<DifferentIndividualsAtom>()?;
+    module.add_class::<ObjectPropertyAtom>()?;
+    module.add_class::<SameIndividualAtom>()?;
 
     add_type_alias!(py, module,
         ClassExpression,
@@ -1785,8 +1792,8 @@ pub fn py_module(py: Python<'_>) -> PyResult<&PyModule> {
         PropertyExpression,
         AnnotationSubject,
         AnnotationValue,
-        Component,
-        Atom
+	Component,
+	Atom
     );
     
     Ok(module)
