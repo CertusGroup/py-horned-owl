@@ -1528,7 +1528,6 @@ wrapped! {
 }
 
 wrapped! {
-    #[suffixed]
     pub enum Atom {
 	BuiltInAtom {
 	    pred: IRI,
