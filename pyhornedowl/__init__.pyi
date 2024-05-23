@@ -103,25 +103,25 @@ class PyIndexedOntology:
         """
         ...
 
-    def get_axioms_for_iri(self, iri: str) -> List[model.AnnotatedAxiom]:
+    def get_axioms_for_iri(self, iri: str) -> List[model.AnnotatedComponent]:
         """
         Gets all axioms for an entity.
         """
         ...
 
-    def get_axioms(self) -> List[model.AnnotatedAxioms]:
+    def get_axioms(self) -> List[model.AnnotatedComponent]:
         """
         Returns all axioms of the ontology.
         """
         ...
 
-    def add_axiom(self, ax: model.Axiom, annotations: Optional[List[model.Annotation]]) -> None:
+    def add_axiom(self, ax: model.Component, annotations: Optional[List[model.Annotation]]) -> None:
         """
         Adds an axiom to the ontology with optional annotations.
         """
         ...
 
-    def remove_axiom(self, ax: model.Axiom) -> None:
+    def remove_axiom(self, ax: model.Component) -> None:
         """
         Removes an axiom from the ontology.
         """
