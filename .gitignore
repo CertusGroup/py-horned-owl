@@ -14,3 +14,5 @@ bin/
 target/
 lib/
 pyvenv.cfg
+.python-version
+lib64
