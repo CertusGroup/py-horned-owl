@@ -1,19 +1,15 @@
 # py-horned-owl
-An experimental bridge from horned-owl to python using PyO3. 
-
+This is a fork of https://github.com/jannahastings/py-horned-owl with various improvements
 
 ## Installation
 
 ### Published version 
-To install the published library: 
-
-`pip install py_horned_owl`
 
 ### From sources
 To build locally from sources, you will need [Rust](https://www.rust-lang.org/tools/install), [PyO3](https://github.com/PyO3/pyo3) and [Maturin](https://github.com/PyO3/maturin). 
 
 Check out this repository: 
-`git clone https://github.com/jannahastings/py-horned-owl/`
+`git clone https://github.com/certusgroup/py-horned-owl/`
 
 In the directory py-horned-owl, create and activate a virtual Python environment: 
 
@@ -47,8 +43,6 @@ for c in onto.get_classes():
 
 
 ```
-
-For more information please visit the [documentation](https://jannahastings.github.io/py-horned-owl/). 
 
 
 
