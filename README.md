@@ -1,5 +1,7 @@
 # py-horned-owl
 This is a fork of https://github.com/jannahastings/py-horned-owl with various improvements
+- Supports horned-owl 1.0, which introduced significant API changes
+- Adds a few more utilitiy functions, including `write_to_rdf_string`
 
 ## Installation
 
