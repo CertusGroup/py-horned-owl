@@ -11,7 +11,7 @@ This is a fork of <https://github.com/jannahastings/py-horned-owl> with various 
 
 To install the published library:
 
-`pip install certus_py_horned_owl`
+`pip install py_horned_owl_certus`
 
 ### From sources
 
