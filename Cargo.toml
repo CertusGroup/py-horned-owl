@@ -1,6 +1,6 @@
 [package]
 name = "py-horned-owl-certus"
-version = "0.5.0"
+version = "0.5.1"
 authors = ["Certus Group <engineering@certusgroup.com>"]
 edition = "2018"
 
