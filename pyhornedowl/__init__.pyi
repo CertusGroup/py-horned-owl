@@ -135,6 +135,17 @@ class PyIndexedOntology:
         """
         ...
 
+    def write_to_rdf_string(self) -> str:
+        """
+        Writes ontology to a string in RDF-XML format
+        """
+        ...
+    def write_to_owx_string(self) -> str:
+        """
+        Writes ontology to a string in OWL-XML format
+        """
+        ...
+      
 
 def open_ontology(ontology: str) -> PyIndexedOntology:
     """
