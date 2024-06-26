@@ -778,28 +778,28 @@ impl FromCompatible<horned_owl::model::IRI<Arc<str>>> for IRI {
 
 impl FromCompatible<&Option<horned_owl::model::IRI<Arc<str>>>> for Option<IRI>{
     fn from_c(value: &Option<horned_owl::model::IRI<Arc<str>>>) -> Self {
-	match value {
-	    Some(iri) => Some(IRI::from(iri)),
-	    None => None
-	}
+    match value {
+        Some(iri) => Some(IRI::from(iri)),
+        None => None
+    }
     }
 }
 
 impl FromCompatible<Option<horned_owl::model::IRI<Arc<str>>>> for Option<IRI>{
     fn from_c(value: Option<horned_owl::model::IRI<Arc<str>>>) -> Self {
-	match value {
-	    Some(iri) => Some(IRI::from(iri.borrow())),
-	    None => None
-	}
+    match value {
+        Some(iri) => Some(IRI::from(iri.borrow())),
+        None => None
+    }
     }
 }
 
 impl FromCompatible<&Option<IRI>> for Option<horned_owl::model::IRI<Arc<str>>>{
     fn from_c(value: &Option<IRI>) -> Self {
-	match value {
-	    Some(iri) => Some(horned_owl::model::IRI::<Arc<str>>::from(iri)),
-	    None => None
-	}
+    match value {
+        Some(iri) => Some(horned_owl::model::IRI::<Arc<str>>::from(iri)),
+        None => None
+    }
     }
 }
 
@@ -872,37 +872,37 @@ impl FromCompatible<BTreeSetWrap<Annotation>>
 }
 
 impl FromCompatible<&(horned_owl::model::DArgument<Arc<str>>,
-		      horned_owl::model::DArgument<Arc<str>>)> for (DArgument, DArgument) {
+              horned_owl::model::DArgument<Arc<str>>)> for (DArgument, DArgument) {
     fn from_c(value: &(horned_owl::model::DArgument<Arc<str>>, horned_owl::model::DArgument<Arc<str>>),) -> Self {
-	(DArgument::from(value.0.borrow()), DArgument::from(value.1.borrow()))
+    (DArgument::from(value.0.borrow()), DArgument::from(value.1.borrow()))
     }
 }
 
 impl FromCompatible<&(DArgument, DArgument)>
     for (horned_owl::model::DArgument<Arc<str>>, horned_owl::model::DArgument<Arc<str>>) {
-	fn from_c(value: &(DArgument, DArgument)) -> Self {
-	    FromCompatible::from_c(value)
-	}
+    fn from_c(value: &(DArgument, DArgument)) -> Self {
+        FromCompatible::from_c(value)
+    }
 }
 
 impl FromCompatible<&(horned_owl::model::IArgument<Arc<str>>,
-		      horned_owl::model::IArgument<Arc<str>>)> for (IArgument, IArgument) {
+              horned_owl::model::IArgument<Arc<str>>)> for (IArgument, IArgument) {
     fn from_c(value: &(horned_owl::model::IArgument<Arc<str>>, horned_owl::model::IArgument<Arc<str>>),) -> Self {
-	(IArgument::from(value.0.borrow()), IArgument::from(value.1.borrow()))
+    (IArgument::from(value.0.borrow()), IArgument::from(value.1.borrow()))
     }
 }
 
 impl FromCompatible<(horned_owl::model::IArgument<Arc<str>>,
-		     horned_owl::model::IArgument<Arc<str>>)> for (IArgument, IArgument) {
+             horned_owl::model::IArgument<Arc<str>>)> for (IArgument, IArgument) {
     fn from_c(value: (horned_owl::model::IArgument<Arc<str>>, horned_owl::model::IArgument<Arc<str>>),) -> Self {
-	(IArgument::from(value.0.borrow()), IArgument::from(value.1.borrow()))
+    (IArgument::from(value.0.borrow()), IArgument::from(value.1.borrow()))
     }
 }
 
 impl FromCompatible<&(IArgument, IArgument)>
     for (horned_owl::model::IArgument<Arc<str>>, horned_owl::model::IArgument<Arc<str>>) {
-	fn from_c(value: &(IArgument, IArgument)) -> Self {
-	    FromCompatible::from_c(value)
+    fn from_c(value: &(IArgument, IArgument)) -> Self {
+        FromCompatible::from_c(value)
         }
 }
 
@@ -1111,7 +1111,7 @@ impl From<Facet> for horned_owl::vocab::Facet {
 impl From<horned_owl::vocab::Facet> for Facet {
     fn from(value: horned_owl::vocab::Facet) -> Self {
         //value.borrow().into()
-	value.into()
+    value.into()
     }
 }
 
@@ -1261,7 +1261,7 @@ wrapped! {
     pub enum AnnotationValue {
         Literal(Literal),
         IRI(IRI),
-	AnonymousIndividual(AnonymousIndividual),
+    AnonymousIndividual(AnonymousIndividual),
     }
 }
 
@@ -1282,8 +1282,8 @@ wrapped! {
 
 wrapped! {
     pub struct OntologyID {
-	pub iri: Option<IRI>,
-	pub viri: Option<IRI>,
+    pub iri: Option<IRI>,
+    pub viri: Option<IRI>,
     }
 }
 
@@ -1514,60 +1514,60 @@ wrapped! {
 wrapped! {
     transparent
     pub enum IArgument {
-	Individual(Individual),
-	Variable(Variable),
+    Individual(Individual),
+    Variable(Variable),
     }
 }
 
 wrapped! {
     transparent
     pub enum DArgument {
-	Literal(Literal),
-	Variable(Variable),
+    Literal(Literal),
+    Variable(Variable),
     }
 }
 
 wrapped! {
     pub enum Atom {
-	BuiltInAtom {
-	    pred: IRI,
-	    args: VecWrap<DArgument>,
-	},
-	ClassAtom {
+    BuiltInAtom {
+        pred: IRI,
+        args: VecWrap<DArgument>,
+    },
+    ClassAtom {
             pred: ClassExpression,
-	    arg: IArgument,
-	},
-	DataPropertyAtom {
-	    pred: DataProperty,
-	    args: (DArgument, DArgument),
-	},
-	DataRangeAtom {
-	    pred: DataRange,
-	    arg: DArgument,
-	},
-	DifferentIndividualsAtom (IArgument, IArgument),
-	ObjectPropertyAtom {
-	    pred: ObjectPropertyExpression,
-	    args: (IArgument, IArgument),
-	},
-	SameIndividualAtom(IArgument, IArgument),
+        arg: IArgument,
+    },
+    DataPropertyAtom {
+        pred: DataProperty,
+        args: (DArgument, DArgument),
+    },
+    DataRangeAtom {
+        pred: DataRange,
+        arg: DArgument,
+    },
+    DifferentIndividualsAtom (IArgument, IArgument),
+    ObjectPropertyAtom {
+        pred: ObjectPropertyExpression,
+        args: (IArgument, IArgument),
+    },
+    SameIndividualAtom(IArgument, IArgument),
     }
 }
 
 
 wrapped! {
     pub struct Rule {
-	pub head:  VecWrap<Atom>,
-	pub body:  VecWrap<Atom>,
+    pub head:  VecWrap<Atom>,
+    pub body:  VecWrap<Atom>,
     }
 }
 
 wrapped! {
     transparent
     pub enum Component {
-	Rule(Rule),
-	DocIRI(DocIRI),
-	OntologyID(OntologyID),
+        Rule(Rule),
+        DocIRI(DocIRI),
+        OntologyID(OntologyID),
         OntologyAnnotation(OntologyAnnotation),
         Import(Import),
         DeclareClass(DeclareClass),
@@ -1786,14 +1786,14 @@ pub fn py_module(py: Python<'_>) -> PyResult<&PyModule> {
         ClassExpression,
         ObjectPropertyExpression,
         SubObjectPropertyExpression,
-	Literal,
+        Literal,
         DataRange,
         Individual,
         PropertyExpression,
         AnnotationSubject,
         AnnotationValue,
-	Component,
-	Atom
+        Component,
+        Atom
     );
     
     Ok(module)
