@@ -507,7 +507,7 @@ impl PyIndexedOntology {
         Ok(axioms)
     }
 
-    /// get_axioms(self) -> List[model.AnnotatedComponents]
+    /// get_axioms(self) -> List[model.AnnotatedComponent]
     ///
     /// Returns all axioms of the ontology.
     fn get_axioms(&mut self, py: Python) -> PyResult<Vec<PyObject>> {
@@ -521,7 +521,7 @@ impl PyIndexedOntology {
         Ok(r)
     }
 
-    /// add_axiom(self, ax: model.Axiom, annotations: Optional[List[model.Annotation]]) -> None
+    /// add_axiom(self, ax: model.Component, annotations: Optional[List[model.Annotation]]) -> None
     ///
     /// Adds an axiom to the ontology with optional annotations.
     fn add_axiom(
@@ -539,7 +539,7 @@ impl PyIndexedOntology {
         Ok(())
     }
 
-    /// remove_axiom(self, ax: model.Axiom) -> None
+    /// remove_axiom(self, ax: model.Component) -> None
     ///
     /// Removes an axiom from the ontology.
     fn remove_axiom(&mut self, ax: model::Component) -> PyResult<()> {
