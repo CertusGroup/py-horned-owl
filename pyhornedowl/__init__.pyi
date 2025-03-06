@@ -1,10 +1,14 @@
 import typing
 from typing import *
+from typing_extensions import deprecated
 
 import model
 
 class PyIndexedOntology:
-    def get_id_for_iri(self, iri: str) -> Optional[str]:
+    """
+    Represents a loaded ontology.
+    """
+    def get_id_for_iri(self, iri: str, iri_is_absolute: Optional[bool] = None) -> Optional[str]:
         """
         Gets the ID of term by it IRI.
         
@@ -26,7 +30,7 @@ class PyIndexedOntology:
         """
         ...
 
-    def set_label(self, iri: str, label: str) -> None:
+    def set_label(self, iri: str, label: str, *, absolute: Optional[bool] = None) -> None:
         """
         Sets the label of a term by iri.
         
@@ -54,13 +58,13 @@ class PyIndexedOntology:
         """
         ...
 
-    def get_subclasses(self, iri: str) -> Set[str]:
+    def get_subclasses(self, iri: str, iri_is_absolute: Optional[bool] = None) -> Set[str]:
         """
         Gets all subclasses of an entity.
         """
         ...
 
-    def get_superclasses(self, iri: str) -> Set[str]:
+    def get_superclasses(self, iri: str, iri_is_absolute: Optional[bool] = None) -> Set[str]:
         """
         Gets all superclasses of an entity.
         """
@@ -78,7 +82,7 @@ class PyIndexedOntology:
         """
         ...
 
-    def get_annotation(self, class_iri: str, ann_iri: str) -> Optional[str]:
+    def get_annotation(self, class_iri: str, ann_iri: str, *, class_iri_is_absolute: Optional[bool] = None, ann_iri_is_absolute: Optional[bool]=None) -> Optional[str]:
         """
         Gets the first annotated value for an entity and annotation property.
         
@@ -88,7 +92,7 @@ class PyIndexedOntology:
         """
         ...
 
-    def get_annotations(self, class_iri: str, ann_iri: str) -> List[str]:
+    def get_annotations(self, class_iri: str, ann_iri: str, *, class_iri_is_absolute: Optional[bool] = None, ann_iri_is_absolute: Optional[bool]=None) -> List[str]:
         """
         Gets all annotated value for an entity and annotation property.
         
@@ -97,15 +101,28 @@ class PyIndexedOntology:
         """
         ...
 
-    def save_to_file(self, file_name: str) -> None:
+    def save_to_string(self, serialization: typing.Literal['owl', 'rdf','ofn', 'owx']) -> str:
         """
-        Saves the ontology to disk in owx format.
+        Saves the ontology to a UTF8 string.
         """
         ...
 
-    def get_axioms_for_iri(self, iri: str) -> List[model.AnnotatedComponent]:
+    def save_to_file(self, file_name: str, serialization: Optional[typing.Literal['owl', 'rdf','ofn', 'owx']]=None) -> None:
+        """
+        Saves the ontology to disk. If no serialization is given it is guessed by the file extension.
+        Defaults to OWL/XML
+        """
+        ...
+
+    def get_axioms_for_iri(self, iri: str, iri_is_absolute: Optional[bool] = None) -> List[model.AnnotatedComponent]:
         """
         Gets all axioms for an entity.
+        """
+        ...
+
+    def get_components_for_iri(self, iri: str, iri_is_absolute: Optional[bool] = None) -> List[model.AnnotatedComponent]:
+        """
+        Gets all components (axiom, swrl, and meta component) for an entity.
         """
         ...
 
@@ -115,59 +132,277 @@ class PyIndexedOntology:
         """
         ...
 
-    def add_axiom(self, ax: model.Component, annotations: Optional[List[model.Annotation]]) -> None:
+    def get_components(self) -> List[model.AnnotatedComponent]:
+        """
+        Returns all axioms of the ontology.
+        """
+        ...
+
+    def add_component(self, component: model.Component, annotations: Optional[Union[List[model.Annotation]|Set[model.Annotation]]]=None) -> None:
         """
         Adds an axiom to the ontology with optional annotations.
         """
         ...
 
-    def remove_axiom(self, ax: model.Component) -> None:
+    def add_axiom(self, ax: model.Component, annotations: Optional[Union[List[model.Annotation]|Set[model.Annotation]]]=None) -> None:
         """
-        Removes an axiom from the ontology.
+        Synonym for `add_component`
         """
         ...
 
-    def iri(self, iri: str) -> model.IRI:
+    def remove_component(self, component: model.Component) -> bool:
         """
-        Creates an new IRI from string.
+        Removes a component from the ontology.
+        """
+        ...
+
+    def remove_axiom(self, ax: model.Component) ->  bool:
+        """
+        Synonym for `remove_component`
+        """
+        ...
+
+    def iri(self, iri: str, *, absolute: Optional[bool] = True) -> model.IRI:
+        """
+        Creates a new IRI from string.
+        
+        Use this method instead of  `model.IRI.parse` if possible as it is more optimized using caches.
+        If `absolute` is None it is guessed by the occurrence of `"://"` in the IRI whether the iri
+        is absolute or not.
+        """
+        ...
+
+    def curie(self, iri: str) -> model.IRI:
+        """
+        Creates a new IRI from CURIE string.
         
         Use this method instead of  `model.IRI.parse` if possible as it is more optimized using caches.
         """
         ...
 
-    def write_to_rdf_string(self) -> str:
+    def clazz(self, iri: str, *, absolute: Optional[bool]=None) -> model.Class:
         """
-        Writes ontology to a string in RDF-XML format
-        """
-        ...
-    def write_to_owx_string(self) -> str:
-        """
-        Writes ontology to a string in OWL-XML format
+        Convenience method to create a Class from an IRI.
+        
+        Uses the `iri` method to cache native IRI instances.
         """
         ...
-      
 
-def open_ontology(ontology: str) -> PyIndexedOntology:
+    def declare_class(self, iri: str, *, absolute: Optional[bool]=None) -> bool:
+        """
+        Convenience method to add a Declare(Class(iri)) axiom.
+        """
+        ...
+
+    def object_property(self, iri: str, *, absolute: Optional[bool]=None) -> model.ObjectProperty:
+        """
+        Convenience method to create an ObjectProperty from an IRI.
+        
+        Uses the `iri` method to cache native IRI instances.
+        """
+        ...
+
+    def declare_object_property(self, iri: str, *, absolute: Optional[bool]=None) -> bool:
+        """
+        Convenience method to add a Declare(ObjectProperty(iri)) axiom.
+        """
+        ...
+
+    def data_property(self, iri: str, *, absolute: Optional[bool]=None) -> model.DataProperty:
+        """
+        Convenience method to create a DataProperty from an IRI.
+        
+        Uses the `iri` method to cache native IRI instances.
+        """
+        ...
+
+    def declare_data_property(self, iri: str, *, absolute: Optional[bool]=None) -> bool:
+        """
+        Convenience method to add a Declare(DataProperty(iri)) axiom.
+        """
+        ...
+
+    def annotation_property(self, iri: str, *, absolute: Optional[bool]=None) -> model.AnnotationProperty:
+        """
+        Convenience method to create an annotationProperty from an IRI.
+        
+        Uses the `iri` method to cache native IRI instances.
+        """
+        ...
+
+    def declare_annotation_property(self, iri: str, *, absolute: Optional[bool]=None) -> bool:
+        """
+        Convenience method to add a Declare(annotationProperty(iri)) axiom.
+        """
+        ...
+
+    def named_individual(self, iri: str, *, absolute: Optional[bool]=None) -> model.NamedIndividual:
+        """
+        Convenience method to create a NamedIndividual from an IRI.
+        
+        Uses the `iri` method to cache native IRI instances.
+        """
+        ...
+
+    def declare_individual(self, iri: str, *, absolute: Optional[bool]=None) -> bool:
+        """
+        Convenience method to add a Declare(NamedIndividual(iri)) axiom.
+        """
+        ...
+
+    def anonymous_individual(self, iri: str) -> model.AnonymousIndividual:
+        """
+        Convenience method to create an AnonymousIndividual from a string.
+        """
+        ...
+
+    def get_descendants(self, parent: str, iri_is_absolute: Optional[bool] = None) -> Set[str]:
+        """
+        Gets all direct and indirect subclasses of a class.
+        """
+        ...
+
+    def get_ancestors(self, child: str, iri_is_absolute: Optional[bool] = None) -> Set[str]:
+        """
+        Gets all direct and indirect super classes of a class.
+        """
+        ...
+
+    def build_iri_index(self) -> None:
+        """
+        Builds an index by iri (IRIMappedIndex).
+        """
+        ...
+
+    def component_index(self) -> None:
+        """
+        Builds an index by component kind (ComponentMappedIndex).
+        """
+        ...
+
+    def build_indexes(self) -> None:
+        """
+        Builds indexes to allow (a quicker) access to axioms and entities.
+        """
+        ...
+
+    prefix_mapping: PrefixMapping
+    """
+    The prefix mapping
+    """
+
+
+class IndexCreationStrategy:
+    """
+    Values to indicate when to build the additional indexes.
+    
+    """
+    OnLoad: typing.Self
+    """
+    Create the additional indexes when the ontology is loaded
+    """
+    OnQuery: typing.Self
+    """
+    Create the additional indexes only when they are needed
+    """
+    Explicit: typing.Self
+    """
+    Only create the additional indexes when explicity requested
+    """
+
+class PrefixMapping:
+    def __iter__(self, /):
+        ...
+
+    def __len__(self, /):
+        ...
+
+    def __getitem__(self, key, /):
+        ...
+
+    def __setitem__(self, key, value, /):
+        ...
+
+    def __delitem__(self, key, /):
+        ...
+
+    def __contains__(self, key, /):
+        ...
+
+    def add_default_prefix_names(self) -> None:
+        """
+        Adds the prefix for rdf, rdfs, xsd, and owl
+        """
+        ...
+
+    def add_prefix(self, iriprefix: str, mappedid: str) -> None:
+        """
+        Adds the prefix `iriprefix`.
+        """
+        ...
+
+    def remove_prefix(self, iriprefix: str) -> None:
+        """
+        Remove a prefix from the mapping.
+        """
+        ...
+
+    def expand_curie(self, curie: str) -> str:
+        """
+        Expands a curie. Throws a ValueError if the prefix is invalid or unknown
+        """
+        ...
+
+    def shrink_iri(self, iri: str) -> str:
+        """
+        Shrinks an absolute IRI to a CURIE. Throws a ValueError on failure
+        """
+        ...
+
+
+def open_ontology(ontology: str, serialization: Optional[typing.Literal['owl', 'rdf','ofn', 'owx']]=None, index_strategy = IndexCreationStrategy.OnQuery) -> PyIndexedOntology:
     """
     Opens an ontology from a path or plain text.
     
-    If `ontology` is a path, the file is loaded. Otherwise, `ontology` is interepreted as an ontology in either owx or owl format.
-    Note: Only .owl and .owx files are currently supported.
+    If `ontology` is a path, the file is loaded. Otherwise, `ontology` is interpreted as an ontology
+    in plain text.
+    If no serialization is specified the serialization is guessed by the file extension or all parsers are tried
+    until one succeeds.
     """
-     ..
+    ...
 
 
+def open_ontology_from_file(path: str, serialization: Optional[typing.Literal['owl', 'rdf','ofn', 'owx']]=None, index_strategy = IndexCreationStrategy.OnQuery) -> PyIndexedOntology:
+    """
+    Opens an ontology from a file
+    
+    If the serialization is not specified it is guessed from the file extension. Defaults to OWL/XML.
+    """
+    ...
+
+
+def open_ontology_from_string(ontology: str, serialization: Optional[typing.Literal['owl', 'rdf','ofn', 'owx']]=None, index_strategy = IndexCreationStrategy.OnQuery) -> PyIndexedOntology:
+    """
+    Opens an ontology from plain text.
+    
+    If no serialization is specified, all parsers are tried until one succeeds
+    """
+    ...
+
+
+@deprecated("please use `PyIndexedOntology.get_descendants` instead")
 def get_descendants(onto: PyIndexedOntology, parent: str) -> Set[str]:
     """
-    Gets all direct and indirect subclasses of an class.
+    Gets all direct and indirect subclasses of a class.
     """
-     ..
+    ...
 
 
+@deprecated("please use `PyIndexedOntology.get_ancestors` instead")
 def get_ancestors(onto: PyIndexedOntology, child: str) -> Set[str]:
     """
     Gets all direct and indirect super classes of a class.
     """
-     ..
+    ...
 
 

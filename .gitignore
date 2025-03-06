@@ -5,14 +5,10 @@ Cargo.lock
 
 .idea
 .code
+.vscode
 
 **/__pycache__
 docs/source/generated
 docs/build
 
-bin/
-target/
-lib/
-pyvenv.cfg
-.python-version
-lib64
+venv

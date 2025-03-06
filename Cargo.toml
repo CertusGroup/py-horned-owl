@@ -1,26 +1,32 @@
 [package]
-name = "py-horned-owl-certus"
-version = "0.5.1"
 authors = ["Certus Group <engineering@certusgroup.com>"]
 edition = "2018"
+name = "py-horned-owl-certus"
+version = "0.5.1"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-name="pyhornedowl"
-crate-type=["cdylib"]
+crate-type = ["cdylib"]
+name = "pyhornedowl"
 
 [dependencies.pyo3]
-version = "0.20"
-features = ["abi3-py37", "extension-module", "experimental-inspect"]
+features = [
+    "abi3-py37",
+    "experimental-inspect",
+    "extension-module",
+    "multiple-pymethods",
+]
+version = "0.21"
 
 [dependencies]
-horned-owl = "1.0"
-curie = "0.1.1"
-failure = "0.1.2"
-quote = "1.0"
+curie = "0.1.2"
+failure = "0.1.8"
+horned-bin = { git = "https://github.com/phillord/horned-owl", branch = "devel" }
+horned-owl = { git = "https://github.com/phillord/horned-owl", branch = "devel" }
 paste = "1.0"
-regex="1.10"
+quote = "1.0"
+regex = "1.10"
 
 [profile.dev]
-opt-level=3
+opt-level = 3
