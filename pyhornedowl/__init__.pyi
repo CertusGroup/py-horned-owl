@@ -103,6 +103,18 @@ class PyIndexedOntology:
         """
         ...
 
+    def write_to_rdf_string(self) -> None:
+        """
+        Writes the ontology to a string in rdf format.
+        """
+        ...
+
+    def write_to_owx_string(self) -> None:
+        """
+        Writes the ontology to a string in rdf format.
+        """
+        ...
+
     def get_axioms_for_iri(self, iri: str) -> List[model.AnnotatedComponent]:
         """
         Gets all axioms for an entity.
@@ -135,17 +147,6 @@ class PyIndexedOntology:
         """
         ...
 
-    def write_to_rdf_string(self) -> str:
-        """
-        Writes ontology to a string in RDF-XML format
-        """
-        ...
-    def write_to_owx_string(self) -> str:
-        """
-        Writes ontology to a string in OWL-XML format
-        """
-        ...
-      
 
 def open_ontology(ontology: str) -> PyIndexedOntology:
     """
@@ -154,20 +155,20 @@ def open_ontology(ontology: str) -> PyIndexedOntology:
     If `ontology` is a path, the file is loaded. Otherwise, `ontology` is interepreted as an ontology in either owx or owl format.
     Note: Only .owl and .owx files are currently supported.
     """
-     ..
+    ...
 
 
 def get_descendants(onto: PyIndexedOntology, parent: str) -> Set[str]:
     """
     Gets all direct and indirect subclasses of an class.
     """
-     ..
+    ...
 
 
 def get_ancestors(onto: PyIndexedOntology, child: str) -> Set[str]:
     """
     Gets all direct and indirect super classes of a class.
     """
-     ..
+    ...
 
 
