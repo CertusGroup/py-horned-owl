@@ -17,7 +17,7 @@ features = [
     "extension-module",
     "multiple-pymethods",
 ]
-version = "0.21"
+version = "0.24"
 
 [dependencies]
 curie = "0.1.2"
